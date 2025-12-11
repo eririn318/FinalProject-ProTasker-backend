@@ -20,7 +20,7 @@ const app = express();
 // ========= Middlewares =================
 app.use(morgan('dev')); // logger
 app.use(express.json()); // body parser
-app.use(cors({origin: [process.env.FRONTEND_URL, 'finalproject-protasker-frontend.netlify.app'],
+app.use(cors({origin: [process.env.FRONTEND_URL, 'https://finalproject-protasker-frontend.netlify.app'],
     credentials:true
  }));//open the door for FRONTEND_URL=localhost:5173(frontend)
 require('./config/passport')
