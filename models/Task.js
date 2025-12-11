@@ -22,7 +22,8 @@ const taskSchema = new mongoose.Schema({
         type: String,
         // any other you try to do validate will be validation error
         // value of status
-        enum:['todo', 'in-progress', 'done'],
+        enum:['To Do', 'In Progress', 'Done'],
+        default:"To Do"
       
      }
      },{
