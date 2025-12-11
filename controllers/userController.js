@@ -1,16 +1,18 @@
 const User = require("../models/User");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const secret = process.env.JWT_SECRET;
-const expiration = '24h'; // Token will be valid for 24 hours
+const expiration = "24h"; // Token will be valid for 24 hours
 
 async function getAllUsers(req, res) {
   console.log(req.user);
 
   if (!req.user) {
-    return res.status(401).json({ message: 'You must be logged in to see this!' });
+    return res
+      .status(401)
+      .json({ message: "You must be logged in to see this!" });
   }
-  
+
   const users = await User.find({});
   res.json(users);
 }
@@ -41,9 +43,8 @@ async function registerUser(req, res) {
   }
 }
 
-
 /**
- * 
+ *
  * Login User
  */
 async function loginUser(req, res) {
@@ -68,14 +69,15 @@ async function loginUser(req, res) {
       _id: dbUser._id,
       username: dbUser.username,
       email: dbUser.email,
-      role: dbUser.role
-    }
+      role: dbUser.role,
+    };
 
     // Create Token
-    const token = jwt.sign({data: payload}, secret, {expiresIn: expiration});
+    const token = jwt.sign({ data: payload }, secret, {
+      expiresIn: expiration,
+    });
 
-    res.json({token, user: dbUser});
-
+    res.json({ token, user: dbUser });
   } catch (error) {
     console.error(error);
   }

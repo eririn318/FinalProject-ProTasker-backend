@@ -1,7 +1,7 @@
 const express = require("express");
 const Project = require("../models/Project");
 const { authMiddleware } = require("../middlewares/auth");
-const Task=require("../models/Task")
+const Task = require("../models/Task");
 
 const projectRouter = express.Router();
 
@@ -121,7 +121,6 @@ projectRouter.delete("/:projectId", async (req, res) => {
         .json({ message: "No project found with this id!" });
     }
 
-
     //Check if the current user is the owner of the note
     if (req.user._id !== projectToDelete.user.toString()) {
       return res
@@ -132,10 +131,10 @@ projectRouter.delete("/:projectId", async (req, res) => {
     // This needs an authorization check
     // whatever passing on url(id)
     //delete all tasks belonging to this project
-    await Task.deleteMany({project:projectToDelete._id})
+    await Task.deleteMany({ project: projectToDelete._id });
 
     await Project.findByIdAndDelete(projectToDelete._id);
-    
+
     res.json({ message: "Project deleted!" });
   } catch (err) {
     res.status(500).json(err);
@@ -179,8 +178,5 @@ module.exports = projectRouter;
 // GET /api/projects: Get all projects owned by the currently logged-in user.
 // GET /api/projects/:id: Get a single project by its ID. This must be protected by an ownership check—a user can only get a project they own.
 // PUT /api/projects/:id: Update a project. Also protected by an ownership check.
-
-
-
 
 // DELETE /api/projects/:id: Delete a project. Also protected by an ownership check.

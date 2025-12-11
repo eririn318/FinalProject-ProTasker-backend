@@ -1,8 +1,8 @@
-const passport = require('passport');
-const GitHubStrategy = require('passport-github2').Strategy;
-const User = require('../models/User');
-const { urlencoded } = require('express');
- 
+const passport = require("passport");
+const GitHubStrategy = require("passport-github2").Strategy;
+const User = require("../models/User");
+const { urlencoded } = require("express");
+
 passport.use(
   new GitHubStrategy(
     {
@@ -13,10 +13,10 @@ passport.use(
     // This is the "verify" callback
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log(profile)
+        console.log(profile);
         // The "profile" object contains the user's GitHub information
         const existingUser = await User.findOne({ githubId: profile.id });
- 
+
         if (existingUser) {
           // If user already exists, pass them to the next middleware
           return done(null, existingUser);
@@ -26,14 +26,14 @@ passport.use(
         const newUser = new User({
           githubId: profile.id,
           username: profile.username,
-          email: profile.emails ? profile.emails[0].value : 'test@mail.com',
-           // Some providers return an array of emails
-            // email: profile.emails[0].value,
-            // for github to generate
-          password:Math.random().toString(36).slice(-8)
+          email: profile.emails ? profile.emails[0].value : "test@mail.com",
+          // Some providers return an array of emails
+          // email: profile.emails[0].value,
+          // for github to generate
+          password: Math.random().toString(36).slice(-8),
         });
-        
-        console.log(newUser)
+
+        console.log(newUser);
 
         await newUser.save();
         done(null, newUser);
@@ -43,17 +43,15 @@ passport.use(
     }
   )
 );
- 
+
 // These functions are needed for session management
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
- 
+
 passport.deserializeUser((id, done) => {
   User.findById(id, (err, user) => done(err, user));
 });
-
-
 
 // http://localhost:4000/api/users/auth/github to direct to github
 // when you click the button for github authorization, you will get the token in url(http://localhost:5173/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoiZXJpcmluMzE4IiwiZW1haWwiOiJ0ZXN0QG1haWwuY29tIiwiX2lkIjoiNjkzMDk1YWQ2NmZmOGUxMjRhNDQ4OWM5In0sImlhdCI6MTc2NDc5MTcyNSwiZXhwIjoxNzY0Nzk4OTI1fQ.tU45lVyRq12aN1Sj8lFfPE3ZfyOxDi-stAKByaoNtKo)
