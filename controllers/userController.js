@@ -37,9 +37,21 @@ async function registerUser(req, res) {
     const user = await User.create(req.body);
     console.log(user);
 
-    res.status(201).json(user);
+    const payload = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    };
+
+    const token = jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+
+    res.status(201).json({ user, token }); 
+    // res.status(201).json(user);
   } catch (error) {
     console.error(error);
+    // send back an error to frontend
+    res.status(500).json({ message: "Registration failed." });
   }
 }
 
@@ -82,6 +94,7 @@ async function loginUser(req, res) {
     console.error(error);
   }
 }
+
 
 module.exports = {
   getAllUsers,
